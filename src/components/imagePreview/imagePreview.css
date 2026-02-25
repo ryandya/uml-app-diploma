@@ -1,0 +1,20 @@
+.preview_container {
+    margin-top: 10px;
+    border-radius: 12px;
+    border: 1px solid #0000002c;
+    overflow: hidden;
+}
+
+.placeholder {
+    padding: 40px 20px;
+}
+
+.preview_Image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height:900px;
+    object-fit: contain;
+    padding: 10px;
+    background: #f9f9f9;
+}

@@ -1,0 +1,48 @@
+.lang_selector {
+    display: flex;
+    gap: 12px;
+}
+
+.lang_btn {
+    padding: 8px 16px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.lang_btn.active {
+    background: #627575;
+    color: white;
+    border-color: #627575 ;
+}
+
+.lang_btn:hover {
+    border-color: #627575;
+    background: #f0f5ff;
+    color: #627575;
+}
+
+.lang_btn.active {
+    background-color: #627575;
+    color: white;
+}
+
+.generation {
+    padding: 14px 20px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+    background: #627575;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: all 0.3s ease;
+}
+
+.generation:hover {
+    background: #4b5757;
+    transform: translateY(-2px);
+}
