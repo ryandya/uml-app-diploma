@@ -5,7 +5,7 @@ import Header from './components/header/header';
 import ImagePreview from './components/imagePreview/imagePreview';
 import LangChoose from './components/LanguageChoose/LanguageChoose';
 import OutputCode from './components/outputCode/outputCode';
-import TopBtn from './components/ToTopBtn';
+import { useTextToClipboard } from './hooks/useTextToClipboard';
 
 function App() {
   const [imageFile, setImageFile] = useState(null)
@@ -14,6 +14,7 @@ function App() {
   const [outputMode, setOutputMode] = useState('code')
   const [code, setCode] = useState('')
   const [umlResult, setUmlResult] = useState(null)
+  const [ClipboardVal, setClipboardVal] = useTextToClipboard()
 
   const handleLangSelect = (lang) => setLanguage(lang)
 
@@ -22,6 +23,7 @@ function App() {
     setImageFile(file)
     setImageUrl(URL.createObjectURL(file))
   }
+
   const handleGenerate = () => {
     const formData = new FormData()
     formData.append('file', imageFile)
@@ -42,8 +44,15 @@ function App() {
       <Header />
       <ExportUML onSelectFile={handleFileSelect} />
       <ImagePreview imageUrl={imageUrl} />
-      <LangChoose selectedLang={language} onSelectLang={setLanguage} onGenerate={handleGenerate} />
-      <OutputCode code={code} result={umlResult} mode={outputMode} onModeChange={setOutputMode} />      
+      <LangChoose selectedLang={language}
+        onSelectLang={setLanguage}
+        onGenerate={handleGenerate} />
+      <OutputCode code={code}
+        setCode={setCode}
+        result={umlResult}
+        mode={outputMode}
+        onModeChange={setOutputMode}
+        TextToClipboard={setClipboardVal} />
     </div>
   )
 }
