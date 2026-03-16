@@ -33,12 +33,11 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange, 
                             onChange={(event) => setCode(event.target.value)}></textarea> :
                             <div className="placeholder_content">Результат распознавания появится здесь...</div>
                     )}
-                    <button>Скачать</button>
                 </div>
+                <div className="downloadBtnDiv">
+                    <button className='download_Btn'>
+                        <img src="./img/ArrowDownDoc.svg" alt="Img" /><span>Скачать JSON</span></button></div>
             </div>
         </div>
     )
 }
-
-// при нажатии происходит проверка выбранного поля,
-// если  это код, то копирует из хука Code, иначе umlresult

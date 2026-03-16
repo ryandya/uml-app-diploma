@@ -66,8 +66,38 @@
 
 .copyBtn img {
     position: absolute;
+    margin-top: 2px;
 }
 
 .copyBtn span {
-    margin-left: 25px;
+    margin-left: 20px;
+}
+
+.download_Btn {
+    padding: 3px;
+    margin: 6px;
+}
+
+.download_Btn:hover {
+    color: #869494;
+}
+
+.download_Btn span {
+    margin-left: 20px;
+}
+
+.download_Btn img {
+    position: absolute;
+    margin-top: 1px;
+}
+
+.downloadBtnDiv {
+    margin-left: auto;
+    width: fit-content;
+    transition: all 0.4s ease;
+    border-top: 3px solid transparent;
+}
+
+.downloadBtnDiv:hover {
+    border-top-color: #a0adad;
 }
