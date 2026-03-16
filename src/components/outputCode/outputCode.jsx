@@ -33,6 +33,7 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange, 
                             onChange={(event) => setCode(event.target.value)}></textarea> :
                             <div className="placeholder_content">Результат распознавания появится здесь...</div>
                     )}
+                    <button>Скачать</button>
                 </div>
             </div>
         </div>
