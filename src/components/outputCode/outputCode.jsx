@@ -22,11 +22,15 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange, 
                 </div>
                 <div className="output_content">
                     {mode === 'code' && (
-                        code ? <textarea value={code} className='code_area' onChange={(event) => setCode(event.target.value)}></textarea> :
+                        code ? <textarea value={code}
+                            className='code_area'
+                            onChange={(event) => setCode(event.target.value)}></textarea> :
                             <div className="placeholder_content">Результат генерации появится здесь...</div>
                     )}
                     {mode === 'result' && (
-                        result ? <textarea value={JSON.stringify(result, null, 2)} className='code_area' onChange={(event) => setCode(event.target.value)}></textarea> :
+                        result ? <textarea value={JSON.stringify(result, null, 2)}
+                            className='code_area'
+                            onChange={(event) => setCode(event.target.value)}></textarea> :
                             <div className="placeholder_content">Результат распознавания появится здесь...</div>
                     )}
                 </div>
