@@ -10,6 +10,7 @@ import { useTextToClipboard } from './hooks/useTextToClipboard';
 function App() {
   const [imageFile, setImageFile] = useState(null)
   const [imageUrl, setImageUrl] = useState(null)
+  const [imageName, setImageName] = useState(null)
   const [language, setLanguage] = useState(null)
   const [outputMode, setOutputMode] = useState('code')
   const [code, setCode] = useState('')
@@ -21,6 +22,7 @@ function App() {
   const handleFileSelect = (file) => {
     if (!file) return
     setImageFile(file)
+    setImageName(file.name)
     setImageUrl(URL.createObjectURL(file))
   }
 
@@ -43,7 +45,8 @@ function App() {
     <div>
       <Header />
       <ExportUML onSelectFile={handleFileSelect} />
-      <ImagePreview imageUrl={imageUrl} />
+      <ImagePreview imageUrl={imageUrl}
+      imageName={imageName} />
       <LangChoose selectedLang={language}
         onSelectLang={setLanguage}
         onGenerate={handleGenerate} />

@@ -18,3 +18,8 @@
     padding: 10px;
     background: #f9f9f9;
 }
+
+.imgName {
+    display: flex;
+    margin-left: 5px;
+}

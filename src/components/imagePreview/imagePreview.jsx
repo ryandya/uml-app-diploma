@@ -1,10 +1,11 @@
 import './imagePreview.css'
 
-export default function ImagePreview({ imageUrl }) {
+export default function ImagePreview({ imageUrl, imageName }) {
     return (
         <div className="wrapper">
             <div className="container">
                 <h2>Предпросмотр изображения</h2>
+                {imageName ? (<span className='imgName'>{imageName}</span>) : (<span className='imgName'>Название файла</span>)}
                 <div className="preview_container">
                     {imageUrl ? (
                         <img

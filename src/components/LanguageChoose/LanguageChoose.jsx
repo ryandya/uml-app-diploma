@@ -12,7 +12,7 @@ export default function LangChoose({onSelectLang, onGenerate, selectedLang}) {
                     <button onClick={() => onSelectLang('java')}
                         className={`lang_btn ${selectedLang === 'java' ? 'active' : ''}`}>
                         Java</button>
-                    <button onClick={() => onSelectLang('java')}
+                    <button onClick={() => onSelectLang('c_plus')}
                         className={`lang_btn ${selectedLang === 'c_plus' ? 'active' : ''}`}>
                         С++</button>
                 </div>
