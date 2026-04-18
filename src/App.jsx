@@ -5,7 +5,6 @@ import Header from './components/header/header';
 import ImagePreview from './components/imagePreview/imagePreview';
 import LangChoose from './components/LanguageChoose/LanguageChoose';
 import OutputCode from './components/outputCode/outputCode';
-import { useTextToClipboard } from './hooks/useTextToClipboard';
 
 function App() {
   const [imageFile, setImageFile] = useState(null)
@@ -15,9 +14,6 @@ function App() {
   const [outputMode, setOutputMode] = useState('code')
   const [code, setCode] = useState('')
   const [umlResult, setUmlResult] = useState(null)
-  const [ClipboardVal, setClipboardVal] = useTextToClipboard()
-
-  // const handleLangSelect = (lang) => setLanguage(lang)
 
   const handleFileSelect = (file) => {
     if (!file) return
@@ -59,9 +55,7 @@ function App() {
         setCode={setCode}
         result={umlResult}
         mode={outputMode}
-        onModeChange={setOutputMode}
-        TextToClipboard={setClipboardVal}
-        ClipboardValue={ClipboardVal} />
+        onModeChange={setOutputMode}/>
     </div>
   )
 }

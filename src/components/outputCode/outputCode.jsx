@@ -1,18 +1,24 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './outputCode.css'
 
-export default function OutputCode({ mode, code, setCode, result, onModeChange, TextToClipboard, ClipboardValue }) {
+export default function OutputCode({ mode, code, setCode, result, onModeChange}) {
 
     const [copied, setCopied] = useState(false);
 
-    useEffect(() => {
-        if (ClipboardValue) {
+    const handleCopy = async () => {
+        const textareaContent = mode === 'code'
+            ? code
+            : JSON.stringify(result, null, 2)
+        try {
+            await navigator.clipboard.writeText(textareaContent)
             setCopied(true)
-
             setTimeout(() => {
-                setCopied(false)}, 600)
+                setCopied(false)
+            }, 800)
+        } catch (error) {
+            console.error('Ошибка: ', error)
         }
-    }, [ClipboardValue])
+    }
 
     return ( 
         <div className="wrapper">
@@ -26,9 +32,7 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange, 
                     >Результат распознавания</div>
                     <div className="copytext">
                         <button className='copyBtn'
-                            onClick={() => TextToClipboard(mode === 'code'
-                                ? code
-                                : JSON.stringify(result, null, 2))}>
+                            onClick={handleCopy}>
                             <img src="./img/ClipboardDocument.svg" alt="img" />
                             <span>{copied ? 'Успешно!' : 'Скопировать'}</span></button>
                     </div>
