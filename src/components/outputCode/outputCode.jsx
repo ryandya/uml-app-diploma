@@ -1,7 +1,20 @@
+import { useEffect, useState } from 'react'
 import './outputCode.css'
 
-export default function OutputCode({ mode, code, setCode, result, onModeChange, TextToClipboard }) {
-    return (
+export default function OutputCode({ mode, code, setCode, result, onModeChange, TextToClipboard, ClipboardValue }) {
+
+    const [copied, setCopied] = useState(false);
+
+    useEffect(() => {
+        if (ClipboardValue) {
+            setCopied(true)
+
+            setTimeout(() => {
+                setCopied(false)}, 600)
+        }
+    }, [ClipboardValue])
+
+    return ( 
         <div className="wrapper">
             <div className="container">
                 <div className="output_selection">
@@ -16,8 +29,8 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange, 
                             onClick={() => TextToClipboard(mode === 'code'
                                 ? code
                                 : JSON.stringify(result, null, 2))}>
-                            <img src="./img/ClipboardDocument.svg" alt="" />
-                            <span>Скопировать</span></button>
+                            <img src="./img/ClipboardDocument.svg" alt="img" />
+                            <span>{copied ? 'Успешно!' : 'Скопировать'}</span></button>
                     </div>
                 </div>
                 <div className="output_content">
@@ -25,13 +38,13 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange, 
                         code ? <textarea value={code}
                             className='code_area'
                             onChange={(event) => setCode(event.target.value)}></textarea> :
-                            <div className="placeholder_content">Результат генерации появится здесь...</div>
+                            <textarea className="code_area fw-300">Результат генерации появится здесь...</textarea>
                     )}
                     {mode === 'result' && (
                         result ? <textarea value={JSON.stringify(result, null, 2)}
                             className='code_area'
                             onChange={(event) => setCode(event.target.value)}></textarea> :
-                            <div className="placeholder_content">Результат распознавания появится здесь...</div>
+                            <textarea className="code_area fw-300">Результат распознавания появится здесь...</textarea>
                     )}
                 </div>
                 <div className="downloadBtnDiv">
