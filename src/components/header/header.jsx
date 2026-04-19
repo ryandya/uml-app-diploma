@@ -7,7 +7,7 @@ export default function Header() {
             <nav className="navbar">
                 <div className="headerSection">
                     <img src="MultipleCameras.png" alt="Img" className='cameraLogo' />
-                    <a href="/" className='logo'>UML-classes ▷ Code Generator</a>
+                    <a href="/" className='logo'>UML ▷ Code</a>
                 </div>
                 <TopBtn />
             </nav>
