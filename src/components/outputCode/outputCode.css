@@ -35,7 +35,6 @@
 .code_area {
     width: 100%;
     min-height: 300px;
-    /* background: #dee2e6; */
     color: #000000;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.95rem;
@@ -55,14 +54,14 @@
     margin-left: auto;
     border-bottom: 3px solid transparent;
     transition: all 0.4s ease;
-    transition: 0 1s;
+    width: fit-content;
     min-width: 138px;
+    
 }
 
 .copyBtn {
     padding: 3px;
     margin: 6px;
-    transition: 0 1s;
 }
 
 .copytext:hover {
@@ -82,14 +81,10 @@
     margin-left: 20px;
 }
 
-.copyBtn:active {
-    transition: 0s;
-    color: rgb(0, 0, 0);
-}
-
 .download_Btn {
     padding: 3px;
     margin: 6px;
+    min-width: 130px;
 }
 
 .download_Btn:hover {

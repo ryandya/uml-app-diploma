@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import './outputCode.css'
 
-export default function OutputCode({ mode, code, setCode, result, onModeChange}) {
+export default function OutputCode({ mode, code, setCode, result, onModeChange }) {
 
     const [copied, setCopied] = useState(false);
+    const [downloaded, setDownloaded] = useState(false);
 
     const handleCopy = async () => {
         const textareaContent = mode === 'code'
@@ -20,7 +21,38 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange})
         }
     }
 
-    return ( 
+    const downloadJSON = async () => {
+        const data = mode === 'code'
+            ? code
+            : result
+        if (!data) return
+
+        const jsonData = mode === 'code'
+            ? {Generated_Code: data}
+            : {OCR_Result: data}
+        
+        try {
+                const jsonString = JSON.stringify(jsonData, null, 2)
+                const blob = new Blob([jsonString], {type: 'application/json'})
+                const url = URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = mode === 'code' ? 'code.json' : 'result.json'
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                URL.revokeObjectURL(url)
+
+                setDownloaded(true)
+                setTimeout(() => {
+                    setDownloaded(false)
+                }, 800);
+        } catch (error) {
+            console.error('Ошибка: ', error)
+        }
+    }
+
+    return (
         <div className="wrapper">
             <div className="container">
                 <div className="output_selection">
@@ -51,9 +83,10 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange})
                             <textarea className="code_area fw-300">Результат распознавания появится здесь...</textarea>
                     )}
                 </div>
-                <div className="downloadBtnDiv">
+                <div className="downloadBtnDiv" onClick={downloadJSON}>
                     <button className='download_Btn'>
-                        <img src="./img/ArrowDownDoc.svg" alt="Img" /><span>Скачать JSON</span></button></div>
+                        <img src="./img/ArrowDownDoc.svg" alt="Img" /><span>{downloaded ? 'Успешно!' : 'Скачать JSON'}</span></button>
+                </div>
             </div>
         </div>
     )
