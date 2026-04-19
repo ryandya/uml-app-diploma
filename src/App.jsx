@@ -22,6 +22,12 @@ function App() {
     setImageUrl(URL.createObjectURL(file))
   }
 
+  const handleFileRemove = () => {
+    setImageFile(null)
+    setImageName(null)
+    setImageUrl(null)
+  }
+
   // const handleGenerate = () => {
   //   const formData = new FormData()
   //   formData.append('file', imageFile)
@@ -47,7 +53,9 @@ function App() {
       <Header />
       <ExportUML onSelectFile={handleFileSelect} />
       <ImagePreview imageUrl={imageUrl}
-        imageName={imageName} />
+        imageName={imageName} 
+        removeFile={handleFileRemove}
+        />
       <LangChoose selectedLang={language}
         onSelectLang={setLanguage}
         onGenerate={setrawtext} />

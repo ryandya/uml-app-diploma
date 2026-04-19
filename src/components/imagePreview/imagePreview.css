@@ -14,7 +14,7 @@
     display: block;
     width: 100%;
     height: auto;
-    max-height:600px;
+    max-height: 600px;
     object-fit: contain;
     padding: 10px;
     /* background: #f9f9f9; */
@@ -23,7 +23,6 @@
 }
 
 .imgName {
-    display: flex;
     margin-left: 5px;
 }
 
@@ -39,4 +38,13 @@
 
 .magnifier {
     max-width: 25px;
+}
+
+.file_remove {
+    font-weight: 300;
+    margin-left: auto;
+}
+
+.img_info {
+    display: flex;
 }

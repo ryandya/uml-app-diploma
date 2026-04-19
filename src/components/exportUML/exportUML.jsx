@@ -8,6 +8,7 @@ export default function ExportUML({ onSelectFile }) {
     const handleChange = (event) => {
         const file = event.target.files[0]
         if (file) onSelectFile(file)
+        event.target.value = ''
     }
 
     const handleDragOver = (event) => {
@@ -15,7 +16,7 @@ export default function ExportUML({ onSelectFile }) {
         setIsDragging(true)
     }
 
-    const handleDragLeave = () => {
+    const handleDragLeave = () => { // dnd bibl
         setIsDragging(false)
     }
 

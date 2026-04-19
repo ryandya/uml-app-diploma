@@ -1,23 +1,24 @@
 import './imagePreview.css'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-export default function ImagePreview({ imageUrl, imageName }) {
+export default function ImagePreview({ imageUrl, imageName, removeFile }) {
 
     return (
         <div className="wrapper">
             <div className="container">
                 <h2>Предпросмотр изображения</h2>
-
-                <span className='imgName'>
-                    {imageName || "Название файла"}
-                </span>
-
+                <div className="img_info">
+                    <span className='imgName'>
+                        {imageName || "Название файла"}
+                    </span>
+                    <button className='file_remove' onClick={removeFile}>{imageUrl ? 'Удалить файл' : ''}</button>
+                </div>
                 <div className="preview_container">
                     {imageUrl ? (
                         <TransformWrapper
                             initialScale={1}
                             minScale={0.7}
-                            maxScale={4}>
+                            maxScale={2}>
                             {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
                                 <>
                                     <div className="tools">
