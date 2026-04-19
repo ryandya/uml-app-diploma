@@ -37,3 +37,13 @@
     color: #4b5757;
     font-weight: 500;
 }
+
+.uploadArea {
+    border: 2px dashed #ccc;
+    transition: 0.2s;
+}
+
+.uploadArea.dragging {
+    border-color: #4CAF50;
+    background-color: rgba(76, 175, 80, 0.1);
+}
