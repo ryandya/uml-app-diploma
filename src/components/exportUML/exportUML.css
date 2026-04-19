@@ -46,4 +46,5 @@
 .uploadArea.dragging {
     border-color: #4CAF50;
     background-color: rgba(76, 175, 80, 0.1);
+    padding: 80px;    
 }

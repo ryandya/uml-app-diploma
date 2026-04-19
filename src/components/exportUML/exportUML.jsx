@@ -16,7 +16,7 @@ export default function ExportUML({ onSelectFile }) {
         setIsDragging(true)
     }
 
-    const handleDragLeave = () => { // dnd bibl
+    const handleDragLeave = () => {
         setIsDragging(false)
     }
 
