@@ -40,6 +40,9 @@ def extract_class_blocks(img):
     blocks.sort(key=lambda b: b['bbox'][1])
     return blocks
 
+
+
+
 def extract_text_from_block(block_img):
     block_pil = Image.fromarray(cv2.cvtColor(block_img, cv2.COLOR_BGR2RGB))
 
