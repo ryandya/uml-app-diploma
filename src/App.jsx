@@ -38,8 +38,9 @@ function App() {
     })
       .then(res => res.json())
       .then(data => {
-        setUmlResult(data)
-        setCode(JSON.stringify(data, null, 2))
+        const parsed = typeof data === 'string' ? JSON.parse(data) : data
+        setUmlResult(parsed)
+        setCode(JSON.stringify(parsed, null, 2))
       })
   }
 
@@ -67,5 +68,5 @@ function App() {
     </div>
   )
 }
-// uvicorn backend.main:app --reload --port 3001.
+// uvicorn backend.main:app --reload --port 3001
 export default App;

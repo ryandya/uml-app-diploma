@@ -1,12 +1,17 @@
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-import cv2
-import numpy as np
+import base64
+from dotenv import load_dotenv
+from pathlib import Path
+from openai import OpenAI
+import os
+import re
+import json
 
-from backend.parser import parse_class_block
-from backend.ocr import extract_class_blocks
-
+load_dotenv(Path(__file__).resolve().parent / ".env")
 app = FastAPI()
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,17 +23,54 @@ app.add_middleware(
 
 @app.post("/api/process-uml")
 async def process_uml(file: UploadFile):
-    data = await file.read()
-    img = cv2.imdecode(np.frombuffer(data, np.uint8), cv2.IMREAD_COLOR)
-    cv2.imshow('result', img)
+    image_bytes = await file.read()
+    image_base64 = base64.b64encode(image_bytes).decode("utf-8")
 
-    blocks = extract_class_blocks(img)
-    classes = []
+    response = client.responses.create(
+        model="gpt-4.1",
+        input=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "input_text",
+                        "text": """Распознай UML диаграмму классов на изображении.
+Верни строго JSON:
 
-    for block in blocks:
-        parsed = parse_class_block(block['text'])
-        if parsed:
-            classes.append(parsed)
+{
+  "classes": [
+    {
+      "name": "string",
+      "attributes": ["string"],
+      "methods": ["string"]
+    }
+  ],
+  "relationships": [
+    {
+      "from": "string",
+      "to": "string",
+      "type": "inheritance | association | aggregation | composition"
+    }
+  ]
+}
 
-    return {"classes": classes}
+Только JSON, без пояснений."""
+                    },
+                    {
+                        "type": "input_image",
+                        "image_url": f"data:image/png;base64,{image_base64}"
+                    }
+                ]
+            }
+        ]
+    )
 
+    text = response.output[0].content[0].text
+
+    # очистка от ```json
+    text = re.sub(r"```json|```", "", text).strip()
+
+    try:
+        return json.loads(text)
+    except:
+        return {"error": "Invalid JSON", "raw": text}

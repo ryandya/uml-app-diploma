@@ -20,6 +20,11 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange }
             console.error('Ошибка: ', error)
         }
     }
+    const handleAutoResize = (e) => {
+        const el = e.target;
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 900) + 'px';
+    };
 
     const downloadJSON = async () => {
         const data = mode === 'code'
@@ -28,25 +33,25 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange }
         if (!data) return
 
         const jsonData = mode === 'code'
-            ? {Generated_Code: data}
-            : {OCR_Result: data}
-        
-        try {
-                const jsonString = JSON.stringify(jsonData, null, 2)
-                const blob = new Blob([jsonString], {type: 'application/json'})
-                const url = URL.createObjectURL(blob)
-                const link = document.createElement('a')
-                link.href = url
-                link.download = mode === 'code' ? 'code.json' : 'result.json'
-                document.body.appendChild(link)
-                link.click()
-                document.body.removeChild(link)
-                URL.revokeObjectURL(url)
+            ? { Generated_Code: data }
+            : { OCR_Result: data }
 
-                setDownloaded(true)
-                setTimeout(() => {
-                    setDownloaded(false)
-                }, 800);
+        try {
+            const jsonString = JSON.stringify(jsonData, null, 2)
+            const blob = new Blob([jsonString], { type: 'application/json' })
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.download = mode === 'code' ? 'code.json' : 'result.json'
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(url)
+
+            setDownloaded(true)
+            setTimeout(() => {
+                setDownloaded(false)
+            }, 800);
         } catch (error) {
             console.error('Ошибка: ', error)
         }
@@ -73,13 +78,19 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange }
                     {mode === 'code' && (
                         code ? <textarea value={code}
                             className='code_area'
-                            onChange={(event) => setCode(event.target.value)}></textarea> :
+                            onChange={(event) => {
+                                setCode(event.target.value)
+                                handleAutoResize(event)
+                            }} onInput={handleAutoResize}></textarea> :
                             <textarea className="code_area fw-300">Результат генерации появится здесь...</textarea>
                     )}
                     {mode === 'result' && (
                         result ? <textarea value={JSON.stringify(result, null, 2)}
                             className='code_area'
-                            onChange={(event) => setCode(event.target.value)}></textarea> :
+                            onChange={(event) => {
+                                setCode(event.target.value)
+                                handleAutoResize(event)
+                            }} onInput={handleAutoResize}></textarea> :
                             <textarea className="code_area fw-300">Результат распознавания появится здесь...</textarea>
                     )}
                 </div>
