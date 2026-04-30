@@ -45,12 +45,7 @@ function App() {
         setCode(data.code)
       })
   }
-
-  // const setrawtext = () => {
-  //   setUmlResult('Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab in corporis accusamus debitis alias officiis rem quae quos nam cupiditate reprehenderit maiores, quia enim voluptatem facilis laboriosam eius. Doloribus amet provident architecto iusto quae quisquam, corrupti laudantium enim esse atque nobis optio, autem ab officia tempore praesentium. Nihil pariatur sed animi ex? Facilis atque animi quam! Harum in cupiditate odit!')
-  //   setCode('1Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab in corporis accusamus debitis alias officiis rem quae quos nam cupiditate reprehenderit maiores, quia enim voluptatem facilis laboriosam eius. Doloribus amet provident architecto iusto quae quisquam, corrupti laudantium enim esse atque nobis optio, autem ab officia tempore praesentium. Nihil pariatur sed animi ex? Facilis atque animi quam! Harum in cupiditate odit!')
-  // }
-
+  
   return (
     <div>
       <Header />
