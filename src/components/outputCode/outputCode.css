@@ -34,7 +34,7 @@
 
 .code_area {
     width: 100%;
-    min-height: 300px;
+    min-height: 500px;
     color: #000000;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.95rem;
@@ -44,7 +44,6 @@
     resize: vertical;
     outline: 1px solid #dee2e6;
     max-height: 900px;
-    overflow-y: auto;
 }
 
 .fw-300 {

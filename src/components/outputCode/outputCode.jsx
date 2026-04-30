@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './outputCode.css'
 
-export default function OutputCode({ mode, code, setCode, result, onModeChange }) {
+export default function OutputCode({ mode, code, setCode, result, onModeChange, setUmlResult }) {
 
     const [copied, setCopied] = useState(false);
     const [downloaded, setDownloaded] = useState(false);
@@ -20,11 +20,6 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange }
             console.error('Ошибка: ', error)
         }
     }
-    const handleAutoResize = (e) => {
-        const el = e.target;
-        el.style.height = 'auto';
-        el.style.height = Math.min(el.scrollHeight, 900) + 'px';
-    };
 
     const downloadJSON = async () => {
         const data = mode === 'code'
@@ -78,19 +73,13 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange }
                     {mode === 'code' && (
                         code ? <textarea value={code}
                             className='code_area'
-                            onChange={(event) => {
-                                setCode(event.target.value)
-                                handleAutoResize(event)
-                            }} onInput={handleAutoResize}></textarea> :
+                            onChange={(event) => setCode(event.target.value)}></textarea> :
                             <textarea className="code_area fw-300">Результат генерации появится здесь...</textarea>
                     )}
                     {mode === 'result' && (
                         result ? <textarea value={JSON.stringify(result, null, 2)}
                             className='code_area'
-                            onChange={(event) => {
-                                setCode(event.target.value)
-                                handleAutoResize(event)
-                            }} onInput={handleAutoResize}></textarea> :
+                            onChange={(event) => setUmlResult(event.target.value)}></textarea> :
                             <textarea className="code_area fw-300">Результат распознавания появится здесь...</textarea>
                     )}
                 </div>

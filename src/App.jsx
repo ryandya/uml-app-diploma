@@ -29,8 +29,11 @@ function App() {
   }
 
   const handleGenerate = () => {
+    if (!imageFile || !language) return
+
     const formData = new FormData()
     formData.append('file', imageFile)
+    formData.append('language', language)
 
     fetch('http://localhost:3001/api/process-uml', {
       method: 'POST',
@@ -38,9 +41,8 @@ function App() {
     })
       .then(res => res.json())
       .then(data => {
-        const parsed = typeof data === 'string' ? JSON.parse(data) : data
-        setUmlResult(parsed)
-        setCode(JSON.stringify(parsed, null, 2))
+        setUmlResult(data.uml)
+        setCode(data.code)
       })
   }
 
@@ -62,6 +64,7 @@ function App() {
         onGenerate={handleGenerate} />
       <OutputCode code={code}
         setCode={setCode}
+        setUmlResult={setUmlResult}
         result={umlResult}
         mode={outputMode}
         onModeChange={setOutputMode}/>

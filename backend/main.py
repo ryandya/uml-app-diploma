@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 import base64
 from dotenv import load_dotenv
@@ -7,6 +7,11 @@ from openai import OpenAI
 import os
 import re
 import json
+
+from backend.utils import normalize_class
+from backend.python_generator import generate_python_code
+from backend.java_generator import generate_java_code
+from backend.cpp_generator import generate_cpp_code
 
 load_dotenv(Path(__file__).resolve().parent / ".env")
 app = FastAPI()
@@ -22,7 +27,7 @@ app.add_middleware(
 )
 
 @app.post("/api/process-uml")
-async def process_uml(file: UploadFile):
+async def process_uml(file: UploadFile, language: str = Form(...)):
     image_bytes = await file.read()
     image_base64 = base64.b64encode(image_bytes).decode("utf-8")
 
@@ -67,10 +72,24 @@ async def process_uml(file: UploadFile):
 
     text = response.output[0].content[0].text
 
-    # очистка от ```json
     text = re.sub(r"```json|```", "", text).strip()
 
     try:
-        return json.loads(text)
+        parsed_json = json.loads(text)
+        
+        classes = [normalize_class(c) for c in parsed_json["classes"]]
+
+        if language == "python":
+            code = generate_python_code(classes)
+        elif language == "java":
+            code = generate_java_code(classes)
+        elif language == "c_plus":
+            code = generate_cpp_code(classes)
+        else:
+            code = "Error"
+            return {
+                "uml": parsed_json,
+                "code": code
+                }
     except:
         return {"error": "Invalid JSON", "raw": text}

@@ -1,6 +1,7 @@
 import './LanguageChoose.css'
 
 export default function LangChoose({onSelectLang, onGenerate, selectedLang}) {
+
     return (
         <div className="wrapper">
             <div className="container">
