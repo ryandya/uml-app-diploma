@@ -74,7 +74,7 @@ async def process_uml(file: UploadFile, language: str = Form(...)):
   ]
 }
 
-Только JSON, без пояснений."""
+Только JSON, без пояснений. Если получена не диаграмма классов, то верни Diagramm not found"""
                     },
                     {
                         "type": "input_image",

@@ -1,54 +1,107 @@
-from backend.utils import guess_java_type
+def find_parent(class_data):
+    for rel in class_data.get("relationships", []):
+        if rel["type"] == "inheritance":
+            return rel["target"]
+    return None
+
+
+def get_java_type(type_name):
+    type_map = {
+        "string": "String",
+        "int": "int",
+        "float": "double",
+        "bool": "boolean"
+    }
+    return type_map.get(type_name.lower(), "String")
+
+
+def generate_method(method):
+    name = method["name"]
+    return_type = get_java_type(method.get("returnType", "void"))
+    params = method.get("params", [])
+
+    param_str = ", ".join(
+        [f"{get_java_type(p['type'])} {p['name']}" for p in params]
+    )
+
+    lines = [f"    public {return_type} {name}({param_str}) " + "{"]
+
+    if name.startswith("get"):
+        field = name[3:]
+        if field:
+            field = field[0].lower() + field[1:]
+            lines.append(f"        return {field};")
+    elif name.startswith("set") and len(params) == 1:
+        field = name[3:]
+        if field:
+            field = field[0].lower() + field[1:]
+            lines.append(f"        this.{field} = {params[0]['name']};")
+    elif return_type != "void":
+        if return_type in ["int", "double"]:
+            lines.append("        return 0;")
+        elif return_type == "boolean":
+            lines.append("        return false;")
+        else:
+            lines.append("        return null;")
+    else:
+        lines.append("        // TODO: Implement")
+
+    lines.append("    }")
+    return "\n".join(lines)
 
 
 def generate_java_code(classes):
-    code = ""
+    result = []
 
     for cls in classes:
-        inheritance = ""
+        name = cls["name"]
+        parent = find_parent(cls)
+        attributes = cls.get("attributes", [])
 
-        for rel in cls["relationships"]:
-            if rel["type"] == "inheritance":
-                inheritance = f" extends {rel['target']}"
+        if parent:
+            result.append(f"public class {name} extends {parent} " + "{")
+        else:
+            result.append(f"public class {name} " + "{")
 
-        code += f"public class {cls['name']}{inheritance} {{\n"
+        # поля
+        for attr in attributes:
+            attr_type = get_java_type(attr["type"])
+            result.append(f"    private {attr_type} {attr['name']};")
 
-        for attr in cls["attributes"]:
-            java_type = guess_java_type(attr["type"])
-            code += f"    private {java_type} {attr['name']};\n"
+        result.append("")
 
-        code += "\n"
+        # constructor
+        parent_attrs = []
+        if parent:
+            for c in classes:
+                if c["name"] == parent:
+                    parent_attrs = c.get("attributes", [])
+                    break
 
-        constructor_params = []
-        for attr in cls["attributes"]:
-            constructor_params.append(
-                f"{guess_java_type(attr['type'])} {attr['name']}"
-            )
+        all_attrs = parent_attrs + attributes
 
-        code += f"    public {cls['name']}({', '.join(constructor_params)}) {{\n"
+        params = ", ".join(
+            [f"{get_java_type(a['type'])} {a['name']}" for a in all_attrs]
+        )
 
-        for attr in cls["attributes"]:
-            code += f"        this.{attr['name']} = {attr['name']};\n"
+        result.append(f"    public {name}({params}) " + "{")
 
-        code += "    }\n\n"
+        if parent_attrs:
+            parent_args = ", ".join([a["name"] for a in parent_attrs])
+            result.append(f"        super({parent_args});")
 
-        for method in cls["methods"]:
-            return_type = guess_java_type(method["returnType"])
+        for attr in attributes:
+            result.append(f"        this.{attr['name']} = {attr['name']};")
 
-            params = []
-            for p in method["params"]:
-                params.append(
-                    f"{guess_java_type(p['type'])} {p['name']}"
-                )
+        result.append("    }")
+        result.append("")
 
-            code += f"    public {return_type} {method['name']}({', '.join(params)}) {{\n"
-            code += "        // TODO\n"
+        # methods
+        for method in cls.get("methods", []):
+            result.append(generate_method(method))
+            result.append("")
 
-            if return_type != "void":
-                code += "        return null;\n"
+        result.append("}")
+        result.append("")
 
-            code += "    }\n\n"
-
-        code += "}\n\n"
-
-    return code
+    return "\n".join(result)

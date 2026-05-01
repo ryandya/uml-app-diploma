@@ -1,55 +1,103 @@
-from backend.utils import guess_cpp_type
+def find_parent(class_data):
+    for rel in class_data.get("relationships", []):
+        if rel["type"] == "inheritance":
+            return rel["target"]
+    return None
+
+
+def get_cpp_type(type_name):
+    type_map = {
+        "string": "std::string",
+        "int": "int",
+        "float": "double",
+        "bool": "bool"
+    }
+    return type_map.get(type_name.lower(), "std::string")
+
+
+def generate_method(method):
+    name = method["name"]
+    return_type = get_cpp_type(method.get("returnType", "void"))
+    params = method.get("params", [])
+
+    param_str = ", ".join(
+        [f"{get_cpp_type(p['type'])} {p['name']}" for p in params]
+    )
+
+    lines = [f"    {return_type} {name}({param_str}) " + "{"]
+
+    if name.startswith("get"):
+        field = name[3:]
+        if field:
+            field = field[0].lower() + field[1:]
+            lines.append(f"        return {field};")
+    elif name.startswith("set") and len(params) == 1:
+        field = name[3:]
+        if field:
+            field = field[0].lower() + field[1:]
+            lines.append(f"        this->{field} = {params[0]['name']};")
+    elif return_type != "void":
+        if return_type in ["int", "double"]:
+            lines.append("        return 0;")
+        elif return_type == "bool":
+            lines.append("        return false;")
+        else:
+            lines.append("        return {};")
+    else:
+        lines.append("        // TODO: Implement")
+
+    lines.append("    }")
+    return "\n".join(lines)
 
 
 def generate_cpp_code(classes):
-    code = "#include <string>\n\n"
+    result = ['#include <string>', ""]
 
     for cls in classes:
-        inheritance = ""
+        name = cls["name"]
+        parent = find_parent(cls)
+        attributes = cls.get("attributes", [])
 
-        for rel in cls["relationships"]:
-            if rel["type"] == "inheritance":
-                inheritance = f" : public {rel['target']}"
+        if parent:
+            result.append(f"class {name} : public {parent} " + "{")
+        else:
+            result.append(f"class {name} " + "{")
 
-        code += f"class {cls['name']}{inheritance} {{\n"
-        code += "private:\n"
+        result.append("private:")
 
-        for attr in cls["attributes"]:
-            cpp_type = guess_cpp_type(attr["type"])
-            code += f"    {cpp_type} {attr['name']};\n"
+        for attr in attributes:
+            result.append(f"    {get_cpp_type(attr['type'])} {attr['name']};")
 
-        code += "\npublic:\n"
+        result.append("")
+        result.append("public:")
 
-        params = []
-        for attr in cls["attributes"]:
-            params.append(
-                f"{guess_cpp_type(attr['type'])} {attr['name']}"
-            )
+        # constructor
+        parent_attrs = []
+        if parent:
+            for c in classes:
+                if c["name"] == parent:
+                    parent_attrs = c.get("attributes", [])
+                    break
 
-        code += f"    {cls['name']}({', '.join(params)}) {{\n"
+        all_attrs = parent_attrs + attributes
 
-        for attr in cls["attributes"]:
-            code += f"        this->{attr['name']} = {attr['name']};\n"
+        params = ", ".join(
+            [f"{get_cpp_type(a['type'])} {a['name']}" for a in all_attrs]
+        )
 
-        code += "    }\n\n"
+        result.append(f"    {name}({params}) " + "{")
 
-        for method in cls["methods"]:
-            return_type = guess_cpp_type(method["returnType"])
+        for attr in attributes:
+            result.append(f"        this->{attr['name']} = {attr['name']};")
 
-            params = []
-            for p in method["params"]:
-                params.append(
-                    f"{guess_cpp_type(p['type'])} {p['name']}"
-                )
+        result.append("    }")
+        result.append("")
 
-            code += f"    {return_type} {method['name']}({', '.join(params)}) {{\n"
-            code += "        // TODO\n"
+        for method in cls.get("methods", []):
+            result.append(generate_method(method))
+            result.append("")
 
-            if return_type != "void":
-                code += "        return {};\n"
+        result.append("};")
+        result.append("")
 
-            code += "    }\n\n"
-
-        code += "};\n\n"
-
-    return code
+    return "\n".join(result)
