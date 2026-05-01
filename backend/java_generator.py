@@ -1,42 +1,54 @@
-from .utils import guess_java_type
+from backend.utils import guess_java_type
+
 
 def generate_java_code(classes):
     code = ""
 
     for cls in classes:
-        fields = ""
-        constructor_params = []
-        constructor_body = ""
-        getters_setters = ""
+        inheritance = ""
+
+        for rel in cls["relationships"]:
+            if rel["type"] == "inheritance":
+                inheritance = f" extends {rel['target']}"
+
+        code += f"public class {cls['name']}{inheritance} {{\n"
 
         for attr in cls["attributes"]:
-            t = guess_java_type(attr["type"])
-            name = attr["name"]
+            java_type = guess_java_type(attr["type"])
+            code += f"    private {java_type} {attr['name']};\n"
 
-            fields += f"    private {t} {name};\n"
-            constructor_params.append(f"{t} {name}")
-            constructor_body += f"        this.{name} = {name};\n"
+        code += "\n"
 
-            getters_setters += f"""
-    public {t} get{ name.capitalize() }() {{
-        return {name};
-    }}
+        constructor_params = []
+        for attr in cls["attributes"]:
+            constructor_params.append(
+                f"{guess_java_type(attr['type'])} {attr['name']}"
+            )
 
-    public void set{ name.capitalize() }({t} {name}) {{
-        this.{name} = {name};
-    }}
-"""
+        code += f"    public {cls['name']}({', '.join(constructor_params)}) {{\n"
 
-        code += f"""
-public class {cls['name']} {{
+        for attr in cls["attributes"]:
+            code += f"        this.{attr['name']} = {attr['name']};\n"
 
-{fields}
+        code += "    }\n\n"
 
-    public {cls['name']}({', '.join(constructor_params)}) {{
-{constructor_body}
-    }}
+        for method in cls["methods"]:
+            return_type = guess_java_type(method["returnType"])
 
-{getters_setters}
-}}
-"""
+            params = []
+            for p in method["params"]:
+                params.append(
+                    f"{guess_java_type(p['type'])} {p['name']}"
+                )
+
+            code += f"    public {return_type} {method['name']}({', '.join(params)}) {{\n"
+            code += "        // TODO\n"
+
+            if return_type != "void":
+                code += "        return null;\n"
+
+            code += "    }\n\n"
+
+        code += "}\n\n"
+
     return code
