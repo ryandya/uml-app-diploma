@@ -32,7 +32,7 @@ async def process_uml(file: UploadFile, language: str = Form(...)):
     image_base64 = base64.b64encode(image_bytes).decode("utf-8")
 
     response = client.responses.create(
-        model="gpt-4.1",
+        model="gpt-5.4-mini",
         input=[
             {
                 "role": "user",
@@ -46,15 +46,30 @@ async def process_uml(file: UploadFile, language: str = Form(...)):
   "classes": [
     {
       "name": "string",
-      "attributes": ["string"],
-      "methods": ["string"]
-    }
-  ],
-  "relationships": [
-    {
-      "from": "string",
-      "to": "string",
-      "type": "inheritance | association | aggregation | composition"
+      "attributes": [
+        {
+          "name": "string",
+          "type": "string"
+        }
+      ],
+      "methods": [
+        {
+          "name": "string",
+          "returnType": "string",
+          "params": [
+            {
+              "name": "string",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "relationships": [
+        {
+          "type": "string",
+          "target": "string"
+        }
+      ]
     }
   ]
 }
@@ -87,9 +102,9 @@ async def process_uml(file: UploadFile, language: str = Form(...)):
             code = generate_cpp_code(classes)
         else:
             code = "Error"
-            return {
-                "uml": parsed_json,
-                "code": code
-                }
+        return {
+            "uml": parsed_json,
+            "code": code
+            }
     except:
         return {"error": "Invalid JSON", "raw": text}
