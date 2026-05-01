@@ -17,26 +17,51 @@ function App() {
 
   const handleFileSelect = (file) => {
     if (!file) return
+
     setImageFile(file)
     setImageName(file.name)
     setImageUrl(URL.createObjectURL(file))
+
+    setUmlResult(null)
+    setCode("")
   }
 
   const handleFileRemove = () => {
     setImageFile(null)
     setImageName(null)
     setImageUrl(null)
+    setUmlResult(null)
+    setCode("")
   }
 
   const handleGenerate = () => {
     if (!imageFile || !language) return
 
-    const formData = new FormData()
-    formData.append('file', imageFile)
-    formData.append('language', language)
+    if (umlResult) {
+      fetch("http://localhost:3001/api/generate-code", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          uml: umlResult,
+          language: language
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          setCode(data.code)
+        })
 
-    fetch('http://localhost:3001/api/process-uml', {
-      method: 'POST',
+      return
+    }
+
+    const formData = new FormData()
+    formData.append("file", imageFile)
+    formData.append("language", language)
+
+    fetch("http://localhost:3001/api/process-uml", {
+      method: "POST",
       body: formData
     })
       .then(res => res.json())

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, Form
+from fastapi import FastAPI, UploadFile, Form, Body
 from fastapi.middleware.cors import CORSMiddleware
 import base64
 from dotenv import load_dotenv
@@ -108,3 +108,21 @@ async def process_uml(file: UploadFile, language: str = Form(...)):
             }
     except:
         return {"error": "Invalid JSON", "raw": text}
+    
+@app.post("/api/generate-code")
+async def generate_code(data: dict = Body(...)):
+    uml = data["uml"]
+    language = data["language"]
+
+    classes = [normalize_class(c) for c in uml["classes"]]
+
+    if language == "python":
+        code = generate_python_code(classes)
+    elif language == "java":
+        code = generate_java_code(classes)
+    elif language == "c_plus":
+        code = generate_cpp_code(classes)
+    else:
+        code = "Error"
+
+    return {"code": code}

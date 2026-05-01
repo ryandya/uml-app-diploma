@@ -28,7 +28,7 @@ export default function OutputCode({ mode, code, setCode, result, onModeChange, 
         if (!data) return
 
         const jsonData = mode === 'code'
-            ? { Generated_Code: data }
+            ? { Generated_Code: code.split('\n') }
             : { OCR_Result: data }
 
         try {
